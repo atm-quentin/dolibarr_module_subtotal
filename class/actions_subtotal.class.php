@@ -688,7 +688,15 @@ class ActionsSubtotal
 				$TTotal_tva = array();
 			}
 			elseif(!TSubtotal::isTitle($l) && !TSubtotal::isSubtotal($l)) {
-				$total += $l->total_ht;
+				if ($l->situation_percent > 0 )//Pour les factures de situation
+                                {
+                                    $prev_progress = $l->get_prev_progress($object->id);
+                                    $progress = ( $l->situation_percent - $prev_progress) /100;
+                                    $total+=($l->total_ht/($l->situation_percent/100)) * $progress;
+
+                                }else {
+                                    $total += $l->total_ht;
+                                }
 				$total_tva += $l->total_tva;
 				$TTotal_tva[$l->tva_tx] += $l->total_tva;
 				$total_ttc += $l->total_ttc;
